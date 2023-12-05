@@ -18,19 +18,27 @@ def create_table():
     connection.close()
 
 def insert_record():
-    cliente = input("Nome do cliente: ")
-    produto = input("Pedido: ")
-    valor = float(input("Valor do produto: "))
-    quantidade = int(input("Quantidade: "))
-    
-    valor_final = valor * quantidade
+    try:
+        cliente = input("Nome do cliente: ")
+        produto = input("Pedido: ")
+        valor = float(input("Valor do produto: "))
+        quantidade = int(input("Quantidade: "))
+        
+        if valor < 0 or quantidade < 0:
+            print("Valor e quantidade devem ser números positivos.")
+            return
 
-    connection = sqlite3.connect('database.db')
-    cursor = connection.cursor()
-    cursor.execute('INSERT INTO pedidos (cliente, produto, valor, quantidade, valor_final) VALUES (?, ?, ?, ?, ?)',
-                   (cliente, produto, valor, quantidade, valor_final))
-    connection.commit()
-    connection.close()
+        valor_final = valor * quantidade
+
+        connection = sqlite3.connect('database.db')
+        cursor = connection.cursor()
+        cursor.execute('INSERT INTO pedidos (cliente, produto, valor, quantidade, valor_final) VALUES (?, ?, ?, ?, ?)',
+                       (cliente, produto, valor, quantidade, valor_final))
+        connection.commit()
+        connection.close()
+        print("Pedido inserido com sucesso.")
+    except ValueError:
+        print("Erro ao inserir pedido. Certifique-se de fornecer valores válidos.")
 
 def get_all_records():
     connection = sqlite3.connect('database.db')
@@ -48,38 +56,61 @@ def display_records(records):
     print(table)
 
 def update_record():
-    records = get_all_records()
-    display_records(records)
+    try:
+        records = get_all_records()
+        display_records(records)
 
-    id = int(input("\nDigite o ID do pedido que deseja atualizar: "))
-    cliente = input("Atualizar dados do cliente: ")
-    produto = input("Atualizar dados do produto: ")
-    valor = float(input("Atualizar valor do produto: "))
-    quantidade = int(input("Atualizar a quantidade: "))
-    
-    valor_final = valor * quantidade
+        id = int(input("\nDigite o ID do pedido que deseja atualizar: "))
+        
+        # Verifica se o ID existe na tabela
+        if not any(record[0] == id for record in records):
+            print("Pedido não encontrado.")
+            return
 
-    connection = sqlite3.connect('database.db')
-    cursor = connection.cursor()
-    cursor.execute('''
-        UPDATE pedidos 
-        SET cliente=?, produto=?, valor=?, quantidade=?, valor_final=?
-        WHERE id=?
-    ''', (cliente, produto, valor, quantidade, valor_final, id))
-    connection.commit()
-    connection.close()
+        cliente = input("Atualizar dados do cliente: ")
+        produto = input("Atualizar dados do produto: ")
+        valor = float(input("Atualizar valor do produto: "))
+        quantidade = int(input("Atualizar a quantidade: "))
+        
+        if valor < 0 or quantidade < 0:
+            print("Valor e quantidade devem ser números positivos.")
+            return
+
+        valor_final = valor * quantidade
+
+        connection = sqlite3.connect('database.db')
+        cursor = connection.cursor()
+        cursor.execute('''
+            UPDATE pedidos 
+            SET cliente=?, produto=?, valor=?, quantidade=?, valor_final=?
+            WHERE id=?
+        ''', (cliente, produto, valor, quantidade, valor_final, id))
+        connection.commit()
+        connection.close()
+        print("Pedido atualizado com sucesso.")
+    except ValueError:
+        print("Erro ao atualizar pedido. Certifique-se de fornecer valores válidos.")
 
 def delete_record():
-    records = get_all_records()
-    display_records(records)
+    try:
+        records = get_all_records()
+        display_records(records)
 
-    id = int(input("\Informe o ID do pedido que deseja excluir: "))
-    
-    connection = sqlite3.connect('database.db')
-    cursor = connection.cursor()
-    cursor.execute('DELETE FROM pedidos WHERE id=?', (id,))
-    connection.commit()
-    connection.close()
+        id = int(input("\Informe o ID do pedido que deseja excluir: "))
+        
+        # Verifica se o ID existe na tabela
+        if not any(record[0] == id for record in records):
+            print("Pedido não encontrado.")
+            return
+
+        connection = sqlite3.connect('database.db')
+        cursor = connection.cursor()
+        cursor.execute('DELETE FROM pedidos WHERE id=?', (id,))
+        connection.commit()
+        connection.close()
+        print("Pedido excluído com sucesso.")
+    except ValueError:
+        print("Erro ao excluir pedido. Certifique-se de fornecer um ID válido.")
 
 # Criar a tabela (execute apenas uma vez)
 create_table()
