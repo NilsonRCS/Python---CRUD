@@ -18,10 +18,10 @@ def create_table():
     connection.close()
 
 def insert_record():
-    cliente = input("Digite o nome do cliente: ")
-    produto = input("Digite o nome do produto: ")
-    valor = float(input("Digite o valor do produto: "))
-    quantidade = int(input("Digite a quantidade: "))
+    cliente = input("Nome do cliente: ")
+    produto = input("Pedido: ")
+    valor = float(input("Valor do produto: "))
+    quantidade = int(input("Quantidade: "))
     
     valor_final = valor * quantidade
 
@@ -52,10 +52,10 @@ def update_record():
     display_records(records)
 
     id = int(input("\nDigite o ID do pedido que deseja atualizar: "))
-    cliente = input("Digite o novo nome do cliente: ")
-    produto = input("Digite o novo nome do produto: ")
-    valor = float(input("Digite o novo valor do produto: "))
-    quantidade = int(input("Digite a nova quantidade: "))
+    cliente = input("Atualizar dados do cliente: ")
+    produto = input("Atualizar dados do produto: ")
+    valor = float(input("Atualizar valor do produto: "))
+    quantidade = int(input("Atualizar a quantidade: "))
     
     valor_final = valor * quantidade
 
@@ -73,7 +73,7 @@ def delete_record():
     records = get_all_records()
     display_records(records)
 
-    id = int(input("\nDigite o ID do pedido que deseja excluir: "))
+    id = int(input("\Informe o ID do pedido que deseja excluir: "))
     
     connection = sqlite3.connect('database.db')
     cursor = connection.cursor()
@@ -85,7 +85,7 @@ def delete_record():
 create_table()
 
 while True:
-    print("\nEscolha uma opção:")
+    print("\nProjetinho CRUD:")
     print("1 - Inserir um novo pedido")
     print("2 - Visualizar todos os pedidos")
     print("3 - Atualizar um pedido")
